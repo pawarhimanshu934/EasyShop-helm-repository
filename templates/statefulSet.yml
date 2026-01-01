@@ -1,0 +1,41 @@
+kind: StatefulSet
+apiVersion: apps/v1
+
+metadata:
+  name: {{ .Release.Name }}-statefulset
+  labels:
+    app: {{ .Values.StatefulSet.app }}
+
+spec:
+  serviceName: {{ .Values.StatefulSet.spec.serviceName }}
+  replicas: {{ .Values.StatefulSet.spec.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.StatefulSet.app }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.StatefulSet.app }}
+
+    spec:
+      containers:
+        - name: {{ .Values.StatefulSet.app }}-container
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongodb-vol
+              mountPath: /data/db
+          resources:
+{{ toYaml .Values.StatefulSet.containers.resources | nindent 12 }}            
+  
+  volumeClaimTemplates:
+    - metadata:
+        name: mongodb-vol
+      spec:
+        accessModes:
+{{ toYaml .Values.StatefulSet.volumeClaimTemplate.spec.accessModes | nindent 10 }}
+        storageClassName: {{ .Values.StatefulSet.volumeClaimTemplate.spec.storageClassName }}
+        resources:
+{{ toYaml .Values.StatefulSet.volumeClaimTemplate.spec.resources | nindent 10 }}

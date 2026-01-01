@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+
+metadata:
+  name: {{ .Release.Name }}-service
+  
+spec:
+  type: {{ .Values.Service.type }}
+  selector:
+    app: {{ .Values.Deployment.app }}
+
+  ports:
+{{ toYaml .Values.Service.ports | nindent 4 }}

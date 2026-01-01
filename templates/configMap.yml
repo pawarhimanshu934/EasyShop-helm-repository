@@ -1,0 +1,11 @@
+kind: ConfigMap
+apiVersion: v1
+
+metadata:
+  name: {{ .Release.Name }}-configmap
+
+data:
+  MONGODB_URI: "{{ .Values.ConfigMap.data.mongo_url }}"
+  NODE_ENV: "{{ .Values.ConfigMap.data.node_env }}"
+  NEXT_PUBLIC_API_URL: "{{ .Values.ConfigMap.data.next_public_api_url }}"
+  NEXTAUTH_URL: "{{ .Values.ConfigMap.data.nextauth_url }}"

@@ -1,0 +1,74 @@
+Secret:
+  NEXTAUTH_SECRET: Sg69oOBBsVaHN4u5nFJz7Wu5DbeE3lTnDIZP4tbqj1w=
+  JWT_SECRET: 1fae7b6b1c8e721cd713f27a73d62d78f51ffb72a0d23b5854829599f093969c
+
+ConfigMap:
+  data:
+    mongo_url: mongodb://mongodb-service:27017/easyshop
+    node_env: production
+    next_public_api_url: http://54.167.112.59/api  
+    nextauth_url: http://54.167.112.59
+
+Deployment:
+  app: easyshop
+  spec:
+    replicas: 3
+  containers:
+    image: hiimanshupawar/easyshop
+  resources:
+    requests:
+      memory: "500Mi"
+      cpu: "300m"
+    limits:
+      memory: "800Mi"
+      cpu: "500m"
+
+Service:
+  type: NodePort
+  ports:
+    - port: 80
+      nodePort: 31500
+      containerPort: 3000
+
+StatefulSet:
+  app: mongodb
+  spec:
+    serviceName: mongodb-service
+    replicas: 3
+  containers:
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "200m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+  volumeClaimTemplate:
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: standard
+      resources:
+        requests:
+          storage: 5Gi
+
+Hpa:
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
+
+Ingress:
+  paths:
+    - path: /
+      pathType: Prefix
+      backend:
+        service:
+          name: easyshop-service
+          port:
+            number: 80

@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+
+metadata:
+  name: mongodb-service
+
+spec:
+  clusterIP: None
+  selector:
+    app: {{ .Values.StatefulSet.app }}
+
+  ports:
+    - protocol: TCP
+      targetPort: 27017
+      port: 27017

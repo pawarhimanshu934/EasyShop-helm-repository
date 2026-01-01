@@ -1,0 +1,48 @@
+kind: Deployment
+apiVersion: apps/v1
+
+metadata: 
+  name: {{ .Release.Name }}-deployment
+  labels:
+    app: {{ .Values.Deployment.app }}
+
+spec:
+  replicas: {{ .Values.Deployment.spec.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.Deployment.app }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.Deployment.app }}
+    
+    spec:
+      containers:
+      - name: {{ .Values.Deployment.app }}-container
+        image: {{ .Values.Deployment.containers.image }}
+        ports:
+          - containerPort: 3000
+        env:
+        - name: NEXTAUTH_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: NEXTAUTH_SECRET
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-secret
+              key: JWT_SECRET
+        - name: NEXTAUTH_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Release.Name }}-configmap
+              key: NEXTAUTH_URL
+        envFrom:
+          - configMapRef:
+              name: {{ .Release.Name }}-configmap
+          - secretRef:
+              name: {{ .Release.Name }}-secret
+        resources: 
+{{ toYaml .Values.Deployment.resources | nindent 10 }}

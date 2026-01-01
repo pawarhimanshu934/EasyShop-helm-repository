@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  Easyshop-helm:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2026-01-01T14:26:45.9869768Z"
+    description: A Helm chart for Kubernetes
+    digest: 4c3236639e111765258bf06d3920a9be235be13a54cc7c83b0080ad1db4c7fc6
+    name: Easyshop-helm
+    type: application
+    urls:
+    - Easyshop-helm-0.1.0.tgz
+    version: 0.1.0
+generated: "2026-01-01T14:26:45.986120845Z"
