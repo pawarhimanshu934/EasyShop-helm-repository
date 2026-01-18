@@ -11,10 +11,12 @@ spec:
   rules:
     - http:
         paths:
-          - path: {{ .Values.Ingress.paths[0].path  }}
-            pathType: {{ .Values.Ingress.path[0].pathType }}
+  {{- range .Values.Ingress.paths }}
+          - path: {{ .path  }}
+            pathType: {{ .pathType }}
             backend:
               service:
-                name: {{ .Release.Name }}-service }}
+                name: {{ $.Release.Name }}-service
                 port:
-                  number: {{ .Values.Ingress.paths[0].backend.service.port.number }}
+                  number: {{ .backend.service.port.number }}
+  {{- end }}
